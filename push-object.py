@@ -46,9 +46,9 @@ def upload_file(session, bucket, file_name, object_name, extra_args):
     s3 = session.resource('s3')
     s3_bucket = s3.Bucket(bucket)
     try:
-        response = s3_bucket.upload_file(file_name, object_name,
+        s3_bucket.upload_file(file_name, object_name,
                                          ExtraArgs={"Metadata": extra_args, "Tagging": parse.urlencode(extra_args)})
-        logger.info(response)
+        logger.info(f"file uploaded {object_name}")
     except ClientError as e:
         logging.error(e)
         return False
