@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 boto3 = "<1.19.0,>=1.18.0"
+inquirer = "<=2.7.0,<2.8.0"
 
 [dev-packages]
 
