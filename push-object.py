@@ -2,6 +2,7 @@ import logging
 import os
 import random
 import string
+from urllib import parse
 
 import boto3
 from botocore.exceptions import ClientError
@@ -45,7 +46,8 @@ def upload_file(session, bucket, file_name, object_name, extra_args):
     s3 = session.resource('s3')
     s3_bucket = s3.Bucket(bucket)
     try:
-        response = s3_bucket.upload_file(file_name, object_name, ExtraArgs={"Metadata": extra_args})
+        response = s3_bucket.upload_file(file_name, object_name,
+                                         ExtraArgs={"Metadata": extra_args, "Tagging": parse.urlencode(extra_args)})
         logger.info(response)
     except ClientError as e:
         logging.error(e)
@@ -65,12 +67,12 @@ def get_uploaded_file():
 
 def get_tag():
     tags = [
-        {"outlet": "us", "validation_time": 1},
-        {"outlet": "uk", "validation_time": 2},
-        {"outlet": "bd", "validation_time": 3}
+        {"outlet": "us", "validation_time": "1"},
+        {"outlet": "uk", "validation_time": "2"},
+        {"outlet": "bd", "validation_time": "3"}
     ]
 
-    return tags[random.randint(0, len(tags))]
+    return tags[random.randint(0, len(tags)-1)]
 
 
 def main():
