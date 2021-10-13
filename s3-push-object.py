@@ -42,12 +42,11 @@ def upload_file(session, bucket, file_name, object_name, extra_args):
     if object_name is None:
         object_name = os.path.basename(file_name)
 
-    # Upload the file
-    s3 = session.resource('s3')
-    s3_bucket = s3.Bucket(bucket)
     try:
+        s3 = session.resource('s3')
+        s3_bucket = s3.Bucket(bucket)
         s3_bucket.upload_file(file_name, object_name,
-                                         ExtraArgs={"Metadata": extra_args, "Tagging": parse.urlencode(extra_args)})
+                              ExtraArgs={ "Tagging": parse.urlencode(extra_args)})
         logger.info(f"file uploaded {object_name}")
     except ClientError as e:
         logging.error(e)
@@ -61,7 +60,7 @@ def create_session(profile):
 
 def get_uploaded_file():
     files = os.listdir("files")
-    selected_file = files[random.randint(0, len(files)-1)]
+    selected_file = files[random.randint(0, len(files) - 1)]
     return f"files/{selected_file}"
 
 
@@ -72,7 +71,7 @@ def get_tag():
         {"outlet": "bd", "validation_time": "3"}
     ]
 
-    return tags[random.randint(0, len(tags)-1)]
+    return tags[random.randint(0, len(tags) - 1)]
 
 
 def main():
