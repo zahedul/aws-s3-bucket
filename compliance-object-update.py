@@ -25,19 +25,32 @@ def update_s3_object_tagging(session, bucket_name, content_key):
     client = session.client("s3")
     response = client.get_object_tagging(Bucket=bucket_name, Key=content_key)
     tags = response.get("TagSet")
+   
     if not tags:
         logger.info(f"adding tag for {content_key}")
-        outlet = content_key.split(".")[-3]
-        logger.info(f"adding {outlet} tag to {content_key}")
+        oaid, outlet_source, outlet, _, _ = content_key.split(".")
+        logger.info(f"adding {outlet},{oaid} tag to {content_key}")
         response = client.put_object_tagging(
             Bucket=bucket_name,
             Key=content_key,
             Tagging={
                 'TagSet': [
                     {
-                        'Key': 'outlet',
-                        'Value': outlet
+                        "Key": "oaid",
+                        "Value": oaid
                     },
+                    {
+                        "Key": "outlet-source",
+                        "Value": outlet_source
+                    },
+                    {
+                        "Key": "outlet",
+                        "Value": outlet
+                    },
+                    {
+                        "Key": "data-centre",
+                        "Value": "dta"
+                    }
                 ]
             }
         )
