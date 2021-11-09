@@ -28,7 +28,13 @@ def update_s3_object_tagging(session, bucket_name, content_key):
    
     if not tags:
         logger.info(f"adding tag for {content_key}")
-        oaid, outlet_source, outlet, _, _ = content_key.split(".")
+        try:
+            oaid, outlet_source, outlet, _, _ = content_key.split(".")
+        except ValueError as e:
+            logger.exception(e)
+            oaid, outlet_source, _, _ = content_key.split(".")
+            outlet = outlet_source
+
         logger.info(f"adding {outlet},{oaid} tag to {content_key}")
         response = client.put_object_tagging(
             Bucket=bucket_name,
